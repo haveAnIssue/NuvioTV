@@ -96,6 +96,14 @@ private val BadgeShape = RoundedCornerShape(NuvioTheme.radii.xs)
 private val CwNewEpisodeBadgeColor = Color(0xFF1D4ED8)
 private val CwNewSeasonBadgeColor = Color(0xFFB45309)
 
+// Episode Type Badge Colors
+private val CwSeriesPremiereBadgeColor = Color(0xFF3B6B8B)
+private val CwSeasonPremiereBadgeColor = Color(0xFF4B7C4B)
+private val CwMidSeasonPremiereBadgeColor = Color(0xFFA68D3B)
+private val CwMidSeasonFinaleBadgeColor = Color(0xFF704B3B)
+private val CwSeasonFinaleBadgeColor = Color(0xFF8B4B7C)
+private val CwSeriesFinaleBadgeColor = Color(0xFF6B4B8B)
+
 /** URLs that failed to load — skip them immediately on next recomposition. */
 internal val brokenImageUrls = java.util.Collections.synchronizedSet(mutableSetOf<String>())
 
@@ -621,6 +629,12 @@ fun ContinueWatchingCard(
     val bgColor = NuvioTheme.colors.Background
     val badgeBackground = remember(bgColor, nextUp) {
         when {
+            nextUp?.isSeriesFinale == true -> CwSeriesFinaleBadgeColor
+            nextUp?.isMidSeasonFinale == true -> CwMidSeasonFinaleBadgeColor
+            nextUp?.isSeasonFinale == true -> CwSeasonFinaleBadgeColor
+            nextUp?.isSeriesPremiere == true -> CwSeriesPremiereBadgeColor
+            nextUp?.isMidSeasonPremiere == true -> CwMidSeasonPremiereBadgeColor
+            nextUp?.isSeasonPremiere == true -> CwSeasonPremiereBadgeColor
             nextUp?.isNewSeasonRelease == true -> CwNewSeasonBadgeColor
             nextUp?.isReleaseAlert == true -> CwNewEpisodeBadgeColor
             else -> bgColor.copy(alpha = 0.8f)
