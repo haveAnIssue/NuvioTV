@@ -401,13 +401,7 @@ internal fun HomeViewModel.loadContinueWatchingPipeline() {
                             isNewSeasonRelease = cached.isNewSeasonRelease,
                             seedSeason = cached.seedSeason,
                             seedEpisode = cached.seedEpisode,
-                            contentLanguage = cached.contentLanguage,
-                            isSeriesPremiere = cached.isSeriesPremiere,
-                            isSeasonPremiere = cached.isSeasonPremiere,
-                            isMidSeasonPremiere = cached.isMidSeasonPremiere,
-                            isMidSeasonFinale = cached.isMidSeasonFinale,
-                            isSeasonFinale = cached.isSeasonFinale,
-                            isSeriesFinale = cached.isSeriesFinale
+                            contentLanguage = cached.contentLanguage
                         )
                     }
                 }
@@ -543,13 +537,7 @@ internal fun HomeViewModel.loadContinueWatchingPipeline() {
                             isNewSeasonRelease = freshIsNewSeasonRelease,
                             seedSeason = cached.seedSeason,
                             seedEpisode = cached.seedEpisode,
-                            contentLanguage = cached.contentLanguage,
-                            isSeriesPremiere = cached.isSeriesPremiere,
-                            isSeasonPremiere = cached.isSeasonPremiere,
-                            isMidSeasonPremiere = cached.isMidSeasonPremiere,
-                            isMidSeasonFinale = cached.isMidSeasonFinale,
-                            isSeasonFinale = cached.isSeasonFinale,
-                            isSeriesFinale = cached.isSeriesFinale
+                            contentLanguage = cached.contentLanguage
                         )
                     )
                 }
@@ -1015,13 +1003,7 @@ internal fun HomeViewModel.loadContinueWatchingPipeline() {
                                 isNewSeasonRelease = freshIsNewSeasonRelease,
                                 seedSeason = cached.seedSeason,
                                 seedEpisode = cached.seedEpisode,
-                                contentLanguage = cached.contentLanguage,
-                                isSeriesPremiere = cached.isSeriesPremiere,
-                                isSeasonPremiere = cached.isSeasonPremiere,
-                                isMidSeasonPremiere = cached.isMidSeasonPremiere,
-                                isMidSeasonFinale = cached.isMidSeasonFinale,
-                                isSeasonFinale = cached.isSeasonFinale,
-                                isSeriesFinale = cached.isSeriesFinale
+                                contentLanguage = cached.contentLanguage
                             )
                         )
                     }
