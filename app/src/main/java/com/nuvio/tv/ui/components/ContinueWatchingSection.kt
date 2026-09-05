@@ -483,10 +483,36 @@ fun ContinueWatchingCard(
     val strPercentWatched = stringResource(R.string.cw_percent_watched)
     val strHoursMinLeft = stringResource(R.string.cw_hours_min_left)
     val strMinLeft = stringResource(R.string.cw_min_left)
+    val strSeriesPremiere = stringResource(R.string.cw_series_premiere)
+    val strSeasonPremiere = stringResource(R.string.cw_season_premiere)
+    val strMidSeasonPremiere = stringResource(R.string.cw_mid_season_premiere)
+    val strMidSeasonFinale = stringResource(R.string.cw_mid_season_finale)
+    val strSeasonFinale = stringResource(R.string.cw_season_finale)
+    val strSeriesFinale = stringResource(R.string.cw_series_finale)
+    val strSeriesPremiereSh = stringResource(R.string.cw_series_premiere_short)
+    val strSeasonPremiereSh = stringResource(R.string.cw_season_premiere_short)
+    val strMidSeasonPremiereSh = stringResource(R.string.cw_mid_season_premiere_short)
+    val strMidSeasonFinaleSh = stringResource(R.string.cw_mid_season_finale_short)
+    val strSeasonFinaleSh = stringResource(R.string.cw_season_finale_short)
+    val strSeriesFinaleSh = stringResource(R.string.cw_series_finale_short)
     // In wide and poster styles, use the short label to save space.
     val useShortLabels = isPosterStyle || isWideStyle
     val effectiveNextUpLabel = if (useShortLabels) strNextUpShort else strNextUp
     val effectiveNewEpisodeLabel = if (useShortLabels) strNewEpisodeShort else strNewEpisode
+    
+    // Helper lambda to determine episode type label with priority: finales > premieres
+    val getEpisodeTypeLabel = { info: com.nuvio.tv.ui.screens.home.NextUpInfo ->
+        when {
+            info.isSeriesFinale -> if (useShortLabels) strSeriesFinaleSh else strSeriesFinale
+            info.isMidSeasonFinale -> if (useShortLabels) strMidSeasonFinaleSh else strMidSeasonFinale
+            info.isSeasonFinale -> if (useShortLabels) strSeasonFinaleSh else strSeasonFinale
+            info.isSeriesPremiere -> if (useShortLabels) strSeriesPremiereSh else strSeriesPremiere
+            info.isMidSeasonPremiere -> if (useShortLabels) strMidSeasonPremiereSh else strMidSeasonPremiere
+            info.isSeasonPremiere -> if (useShortLabels) strSeasonPremiereSh else strSeasonPremiere
+            else -> null
+        }
+    }
+    
     val nextUpBadgeText = nextUp?.let { info ->
         if (info.isReleaseAlert) {
             if (info.isNewSeasonRelease) strNewSeason else effectiveNewEpisodeLabel
@@ -498,7 +524,7 @@ fun ContinueWatchingCard(
             }
             airDateText ?: strUpcoming
         } else {
-            effectiveNextUpLabel
+            getEpisodeTypeLabel(info) ?: effectiveNextUpLabel
         }
     }
     val remainingText = progress?.let {
