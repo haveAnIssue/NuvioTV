@@ -32,6 +32,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -357,6 +358,7 @@ private data class EpisodeRatingChipUi(
 
 // ---------------------------------------------------------------------------------------------
 // Chart-style ratings overlay (grid of all seasons/episodes), opened from a button on the Hero.
+// This lives alongside the tab-based EpisodeRatingsSection above rather than replacing it.
 // ---------------------------------------------------------------------------------------------
 
 private val PanelShape = RoundedCornerShape(10.dp)
@@ -435,40 +437,47 @@ fun EpisodeRatingsOverlayDialog(
     }
     var layoutMode by rememberSaveable(meta.id) { mutableStateOf(RatingsLayoutMode.EPISODES_ACROSS) }
 
-    when {
-        isLoading -> {
-            EpisodeRatingsOverlayMessageDialog(
-                title = meta.name,
-                backdropModel = backdropModel,
-                message = stringResource(R.string.ratings_loading),
-                onDismiss = onDismiss
-            )
-        }
-        error != null -> {
-            EpisodeRatingsOverlayMessageDialog(
-                title = meta.name,
-                backdropModel = backdropModel,
-                message = error,
-                onDismiss = onDismiss
-            )
-        }
-        chartData.displaySeasonNumbers.isEmpty() -> {
-            EpisodeRatingsOverlayMessageDialog(
-                title = meta.name,
-                backdropModel = backdropModel,
-                message = stringResource(R.string.ratings_unavailable),
-                onDismiss = onDismiss
-            )
-        }
-        else -> {
-            EpisodeRatingsOverlay(
-                meta = meta,
-                chartData = chartData,
-                backdropModel = backdropModel,
-                layoutMode = layoutMode,
-                onLayoutModeChanged = { layoutMode = it },
-                onDismiss = onDismiss
-            )
+    // The ratings grid is a numeric chart, not prose: its column order, D-pad
+    // left/right navigation, and scroll direction are all built assuming a
+    // fixed left-to-right layout (same reasoning as the trailer seek bar in
+    // SharedTrailerOverlay.kt). Force LTR here so it renders and navigates
+    // consistently regardless of the app's active locale/layout direction.
+    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
+        when {
+            isLoading -> {
+                EpisodeRatingsOverlayMessageDialog(
+                    title = meta.name,
+                    backdropModel = backdropModel,
+                    message = stringResource(R.string.ratings_loading),
+                    onDismiss = onDismiss
+                )
+            }
+            error != null -> {
+                EpisodeRatingsOverlayMessageDialog(
+                    title = meta.name,
+                    backdropModel = backdropModel,
+                    message = error,
+                    onDismiss = onDismiss
+                )
+            }
+            chartData.displaySeasonNumbers.isEmpty() -> {
+                EpisodeRatingsOverlayMessageDialog(
+                    title = meta.name,
+                    backdropModel = backdropModel,
+                    message = stringResource(R.string.ratings_unavailable),
+                    onDismiss = onDismiss
+                )
+            }
+            else -> {
+                EpisodeRatingsOverlay(
+                    meta = meta,
+                    chartData = chartData,
+                    backdropModel = backdropModel,
+                    layoutMode = layoutMode,
+                    onLayoutModeChanged = { layoutMode = it },
+                    onDismiss = onDismiss
+                )
+            }
         }
     }
 }
@@ -685,6 +694,7 @@ private fun EpisodeRatingsOverlay(
                                 verticalAlignment = Alignment.CenterVertically,
                                 modifier = Modifier.focusRequester(toggleRequester)
                                 .focusProperties {
+                                    left = Cancel
                                     right = closeRequester
                                     down = firstCellFocusRequester ?: Cancel
                                 }
