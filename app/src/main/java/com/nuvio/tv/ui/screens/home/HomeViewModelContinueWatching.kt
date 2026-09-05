@@ -1876,10 +1876,28 @@ private suspend fun HomeViewModel.buildNextUpItem(
         it.season == nextUp.season && (it.season ?: 0) > 0 && it.episode != null
     }?.size ?: 0
     val isSeasonFinale = episodesInCurrentSeason > 0 && nextUp.episode == episodesInCurrentSeason
-    val isMidSeasonFinale = !isSeasonFinale && nextUp.episode != null && nextUp.episode!! > 1 && 
-        seedMeta?.videos?.any { 
-            it.season == nextUp.season && it.episode != null && it.episode!! > nextUp.episode!!
-        } == true
+    
+    // Mid-season finale: last aired episode before unreleased episodes in same season
+    val isMidSeasonFinale = !isSeasonFinale && nextUp.episode != null && nextUp.episode!! > 1 && {
+        val seasonEpisodes = seedMeta?.videos?.filter { 
+            it.season == nextUp.season && (it.season ?: 0) > 0 && it.episode != null
+        } ?: emptyList()
+        
+        // Find the last aired (released and available) episode in this season
+        val airedEpisodes = seasonEpisodes.filter { 
+            it.available != false && isEpisodeReleaseAired(it.released) != false
+        }.mapNotNull { it.episode }.sorted()
+        
+        val isLastAiredEpisode = nextUp.episode == airedEpisodes.lastOrNull()
+        
+        // Check if there are unreleased episodes after this one
+        val hasUnreleasedAfter = seasonEpisodes.any { 
+            it.episode != null && it.episode!! > nextUp.episode!! &&
+            (it.available == false || isEpisodeReleaseAired(it.released) == false)
+        }
+        
+        isLastAiredEpisode && hasUnreleasedAfter
+    }()
     
     val isMidSeasonPremiere = !isSeasonPremiere && nextUp.episode == 1 && 
         seedMeta?.videos?.any {
