@@ -47,6 +47,7 @@ import androidx.compose.ui.input.key.type
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
@@ -251,7 +252,13 @@ fun SynopsisOverlay(
                                     .coerceAtMost(trackHeight)
                                 val thumbTop = trackInset + (trackHeight - thumbHeight) *
                                     (scrollState.value.toFloat() / maxScroll)
-                                val scrollbarX = size.width - 6.dp.toPx()
+
+                                val scrollbarInset = 6.dp.toPx()
+                                val scrollbarX = if (layoutDirection == LayoutDirection.Rtl) {
+                                    scrollbarInset
+                                } else {
+                                    size.width - scrollbarInset
+                                }
 
                                 drawLine(
                                     color = Color.White.copy(alpha = 0.07f),
