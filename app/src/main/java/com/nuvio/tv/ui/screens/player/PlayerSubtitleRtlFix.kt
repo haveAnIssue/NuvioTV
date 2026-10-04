@@ -32,7 +32,7 @@ internal object PlayerSubtitleRtlFix {
      * To isolate a rule, list it in [disabledRules]; to process a track that was not detected as
      * corrupted, set [FORCE_SWAPPED_TRACK].
      */
-    private const val DEBUG_MODE = false
+    private const val DEBUG_MODE = true
 
     /** Skips track detection and treats every track as corrupted. */
     private const val FORCE_SWAPPED_TRACK = false
