@@ -89,6 +89,10 @@ class PlayerSubtitleRtlFixTest {
         Case("Jane תרגום ועריכה על ידי", "תרגום ועריכה על ידי Jane", listOf(Rule.LATIN_SEGMENT)),
         Case("!Fox צוות", "צוות Fox!", listOf(Rule.LATIN_SEGMENT)),
         Case("\u200FJohn - שלום\u200F", "\u200Fשלום - John\u200F", listOf(Rule.LATIN_SEGMENT)),
+        Case("--==< John צוות >==--", "--==< צוות John >==--", listOf(Rule.LATIN_SEGMENT)),
+        Case("- John צוות -", "- צוות John -", listOf(Rule.LATIN_SEGMENT)),
+        Case("--  תרגום וסנכרון  --", "--  תרגום וסנכרון  --", emptyList()),
+        Case("--==< צוות >==--", "--==< צוות >==--", emptyList()),
         Case("שלום - Hello", "שלום - Hello", emptyList()),
         Case("Hello - there", "Hello - there", emptyList()),
         Case("iMri & thebarak", "iMri & thebarak", emptyList()),
@@ -225,7 +229,7 @@ class PlayerSubtitleRtlFixTest {
 
     private fun buildSnapshot(dir: File): List<String> {
         val entries = sortedSetOf<String>()
-        val tags = Regex("<[^>]+>")
+        val tags = Regex("</?[a-zA-Z][^>]*>")
         dir.listFiles { file -> file.extension == "srt" }.orEmpty().sortedBy { it.name }.forEach { file ->
             val blocks = file.readText(Charsets.UTF_8).replace("\r\n", "\n").split("\n\n")
             val lines = blocks.flatMap { block -> block.split("\n").drop(2) }
