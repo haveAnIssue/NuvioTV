@@ -53,6 +53,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -77,6 +78,7 @@ import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.platform.LocalContext
+import com.nuvio.tv.ui.util.contentLayoutDirection
 import com.nuvio.tv.ui.util.recompositionHighlighter
 import com.nuvio.tv.ui.util.dpadRepeatThrottle
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -1317,84 +1319,91 @@ private fun SearchInputField(
             Spacer(modifier = Modifier.width(NuvioTheme.spacing.md))
         }
 
-        OutlinedTextField(
-            value = query,
-            onValueChange = onQueryChanged,
-            modifier = Modifier
-                .weight(1f)
-                .focusRequester(searchFocusRequester)
-                .focusProperties {
-                    canFocus = isScreenActive
-                }
-                .onFocusChanged { focusState ->
-                    onSearchFieldFocusChanged(focusState.isFocused)
-                }
-                .onPreviewKeyEvent { keyEvent ->
-                    when (keyEvent.nativeKeyEvent.keyCode) {
-                        KeyEvent.KEYCODE_ENTER,
-                        KeyEvent.KEYCODE_NUMPAD_ENTER -> {
-                            if (keyEvent.nativeKeyEvent.action == KeyEvent.ACTION_DOWN) {
-                                onSubmit()
-                            }
-                            return@onPreviewKeyEvent true
-                        }
-
-                        KeyEvent.KEYCODE_DPAD_DOWN -> {
-                            if (canMoveToResults) {
+        val deviceLayoutDirection = LocalLayoutDirection.current
+        val fieldLayoutDirection = remember(query, deviceLayoutDirection) {
+            // Empty field keeps the device direction; otherwise follow the query's own content.
+            if (query.isBlank()) deviceLayoutDirection else query.contentLayoutDirection()
+        }
+        CompositionLocalProvider(LocalLayoutDirection provides fieldLayoutDirection) {
+            OutlinedTextField(
+                value = query,
+                onValueChange = onQueryChanged,
+                modifier = Modifier
+                    .weight(1f)
+                    .focusRequester(searchFocusRequester)
+                    .focusProperties {
+                        canFocus = isScreenActive
+                    }
+                    .onFocusChanged { focusState ->
+                        onSearchFieldFocusChanged(focusState.isFocused)
+                    }
+                    .onPreviewKeyEvent { keyEvent ->
+                        when (keyEvent.nativeKeyEvent.keyCode) {
+                            KeyEvent.KEYCODE_ENTER,
+                            KeyEvent.KEYCODE_NUMPAD_ENTER -> {
                                 if (keyEvent.nativeKeyEvent.action == KeyEvent.ACTION_DOWN) {
-                                    keyboardController?.hide()
-                                    onMoveToResults()
+                                    onSubmit()
                                 }
                                 return@onPreviewKeyEvent true
                             }
-                        }
 
-                        else -> {
-                            val clearHistoryKey = RtlKeyUtils.getClearHistoryDpadKey(isRtl)
-                            if (keyEvent.nativeKeyEvent.keyCode == clearHistoryKey) {
-                                if (clearHistoryFocusRequester != null) {
+                            KeyEvent.KEYCODE_DPAD_DOWN -> {
+                                if (canMoveToResults) {
                                     if (keyEvent.nativeKeyEvent.action == KeyEvent.ACTION_DOWN) {
                                         keyboardController?.hide()
-                                        runCatching { clearHistoryFocusRequester.requestFocus() }
+                                        onMoveToResults()
                                     }
                                     return@onPreviewKeyEvent true
                                 }
                             }
+
+                            else -> {
+                                val clearHistoryKey = RtlKeyUtils.getClearHistoryDpadKey(isRtl)
+                                if (keyEvent.nativeKeyEvent.keyCode == clearHistoryKey) {
+                                    if (clearHistoryFocusRequester != null) {
+                                        if (keyEvent.nativeKeyEvent.action == KeyEvent.ACTION_DOWN) {
+                                            keyboardController?.hide()
+                                            runCatching { clearHistoryFocusRequester.requestFocus() }
+                                        }
+                                        return@onPreviewKeyEvent true
+                                    }
+                                }
+                            }
                         }
+                        false
+                    },
+                keyboardOptions = KeyboardOptions.Default.copy(
+                     imeAction = ImeAction.Done,
+                     autoCorrectEnabled = false
+                 ),
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        onSubmit()
+                        keyboardController?.hide()
                     }
-                    false
+                ),
+                singleLine = true,
+                shape = RoundedCornerShape(NuvioTheme.radii.md),
+                placeholder = {
+                    Text(
+                        text = stringResource(R.string.search_placeholder),
+                        color = NuvioTheme.colors.TextTertiary
+                    )
                 },
-            keyboardOptions = KeyboardOptions.Default.copy(
-                 imeAction = ImeAction.Done,
-                 autoCorrectEnabled = false
-             ),
-            keyboardActions = KeyboardActions(
-                onDone = {
-                    onSubmit()
-                    keyboardController?.hide()
-                }
-            ),
-            singleLine = true,
-            shape = RoundedCornerShape(NuvioTheme.radii.md),
-            placeholder = {
-                Text(
-                    text = stringResource(R.string.search_placeholder),
-                    color = NuvioTheme.colors.TextTertiary
+                textStyle = TextStyle(
+                    textDirection = TextDirection.Content
+                ),
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = NuvioTheme.colors.BackgroundCard,
+                    unfocusedContainerColor = NuvioTheme.colors.BackgroundCard,
+                    focusedIndicatorColor = NuvioTheme.colors.FocusRing,
+                    unfocusedIndicatorColor = NuvioTheme.colors.Border,
+                    focusedTextColor = NuvioTheme.colors.TextPrimary,
+                    unfocusedTextColor = NuvioTheme.colors.TextPrimary,
+                    cursorColor = NuvioTheme.colors.FocusRing
                 )
-            },
-            textStyle = TextStyle(
-                textDirection = TextDirection.Content
-            ),
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = NuvioTheme.colors.BackgroundCard,
-                unfocusedContainerColor = NuvioTheme.colors.BackgroundCard,
-                focusedIndicatorColor = NuvioTheme.colors.FocusRing,
-                unfocusedIndicatorColor = NuvioTheme.colors.Border,
-                focusedTextColor = NuvioTheme.colors.TextPrimary,
-                unfocusedTextColor = NuvioTheme.colors.TextPrimary,
-                cursorColor = NuvioTheme.colors.FocusRing
             )
-        )
+        }
 
         // Clear button, requested in review. Placed beside the field rather than as a trailing
         // icon so it is reachable with the D-pad, matching the voice button's treatment.
