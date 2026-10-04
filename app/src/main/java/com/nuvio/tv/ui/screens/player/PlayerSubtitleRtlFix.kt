@@ -32,7 +32,7 @@ internal object PlayerSubtitleRtlFix {
      * To isolate a rule, list it in [disabledRules]; to process a track that was not detected as
      * corrupted, set [FORCE_SWAPPED_TRACK].
      */
-    private const val DEBUG_MODE = true
+    private const val DEBUG_MODE = false
 
     /** Skips track detection and treats every track as corrupted. */
     private const val FORCE_SWAPPED_TRACK = false
@@ -491,6 +491,16 @@ internal object PlayerSubtitleRtlFix {
     private class LatinSegment(val segmentEnd: Int, val restStart: Int)
 
     private fun restoreTrailingLatinSegment(line: CharSequence, numbersMoved: Boolean): LineRepair? {
+        findDecorationFrame(line)?.let { frame ->
+            val repaired = restoreTrailingLatinSegment(line.subSequence(frame.first, frame.last + 1), numbersMoved)
+                ?: return null
+            val text = buildLike(line) {
+                appendSlice(line, 0, frame.first)
+                append(repaired.text)
+                appendSlice(line, frame.last + 1, line.length)
+            }
+            return LineRepair(text, repaired.rules)
+        }
         val segment = findLeadingLatinSegment(line) ?: return null
         val rest = applyRules(line.subSequence(segment.restStart, line.length), numbersMoved)
 
@@ -504,6 +514,20 @@ internal object PlayerSubtitleRtlFix {
             appendSlice(line, 0, punctuationEnd)
         }
         return LineRepair(text, listOf(Rule.LATIN_SEGMENT) + rest.rules)
+    }
+
+    /** Range of the text inside symbol decoration on both sides ("--==< text >==--"), or null. */
+    private fun findDecorationFrame(line: CharSequence): IntRange? {
+        fun isDecoration(c: Char) = c.isWhitespace() || isDash(c) || c in "=<>*~_|#"
+        val end = line.contentEnd()
+        var start = 0
+        while (start < end && isDecoration(line[start])) start++
+        var last = end - 1
+        while (last >= start && isDecoration(line[last])) last--
+        if (start >= last + 1) return null
+        val hasPrefix = (0 until start).any { !line[it].isWhitespace() }
+        val hasSuffix = (last + 1 until end).any { !line[it].isWhitespace() }
+        return if (hasPrefix && hasSuffix) start..last else null
     }
 
     /**
