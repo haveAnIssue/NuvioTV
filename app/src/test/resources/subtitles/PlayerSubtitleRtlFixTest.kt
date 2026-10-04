@@ -72,6 +72,7 @@ class PlayerSubtitleRtlFixTest {
         Case("(מה שלומך? (בספרדית", "מה שלומך? (בספרדית)", listOf(Rule.LEADING_PUNCTUATION)),
         Case("(א ב. (ג ד", "א ב. (ג ד)", listOf(Rule.LEADING_PUNCTUATION)),
         Case("(שלום", "שלום)", listOf(Rule.LEADING_PUNCTUATION)),
+        Case(".(כן, אולי משהו (הכלאה בין א לב", "כן, אולי משהו (הכלאה בין א לב).", listOf(Rule.LEADING_PUNCTUATION)),
         Case("(באנגלית, גם: שלום)", "(באנגלית, גם: שלום)", emptyList()),
         Case(".(אוז - טקסט)", "(אוז - טקסט).", listOf(Rule.LEADING_PUNCTUATION)),
 
