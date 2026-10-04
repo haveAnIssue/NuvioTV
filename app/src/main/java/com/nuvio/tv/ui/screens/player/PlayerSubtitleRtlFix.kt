@@ -725,15 +725,15 @@ internal object PlayerSubtitleRtlFix {
 
         return buildLike(line) {
             appendSlice(line, runEnd, end)
-            // Quotes and geresh attach to the word first, then the other punctuation.
+            // Quotes, geresh and closing brackets attach to the word first, then the other punctuation.
             for (i in 0 until runEnd) {
                 if (isMovableQuote(line[i])) appendSlice(line, i, i + 1)
+                else if (line[i] == '(' && bracketIsMovable) append(')')
             }
             appendSlice(line, spaceStart, runEnd)
             for (i in 0 until runEnd) {
                 val c = line[i]
-                if (!isMovable(c) || isMovableQuote(c)) continue
-                if (c == '(') append(')') else appendSlice(line, i, i + 1)
+                if (c != '(' && isMovable(c) && !isMovableQuote(c)) appendSlice(line, i, i + 1)
             }
             if (line.endsWithCarriageReturn()) append(CARRIAGE_RETURN)
         }
