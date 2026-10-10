@@ -2310,7 +2310,8 @@ private fun PlayerControlsOverlay(
                         upFocusRequester = progressBarUpFocusRequester,
                         downFocusRequester = playPauseFocusRequester,
                         onUpKey = onHideControls,
-                        onFocused = onResetHideTimer
+                        onFocused = onResetHideTimer,
+                        onClick = onPlayPause
                     )
                 }
 
@@ -2516,7 +2517,8 @@ private fun PlayerControlsProgressBarHost(
     upFocusRequester: FocusRequester? = null,
     downFocusRequester: FocusRequester? = null,
     onUpKey: (() -> Unit)? = null,
-    onFocused: (() -> Unit)? = null
+    onFocused: (() -> Unit)? = null,
+    onClick: (() -> Unit)? = null
 ) {
     val playbackTimeline by viewModel.playbackTimeline.collectAsState()
 
@@ -2534,6 +2536,7 @@ private fun PlayerControlsProgressBarHost(
         downFocusRequester = downFocusRequester,
         onUpKey = onUpKey,
         onFocused = onFocused,
+        onClick = onClick,
         bufferedPosition = playbackTimeline.bufferedPosition
     )
 }
@@ -2685,6 +2688,7 @@ private fun ProgressBar(
     downFocusRequester: FocusRequester? = null,
     onUpKey: (() -> Unit)? = null,
     onFocused: (() -> Unit)? = null,
+    onClick: (() -> Unit)? = null,
     /** Position (ms) up to which content is buffered. Pass 0 to skip the overlay. */
     bufferedPosition: Long = 0L
 ) {
@@ -2740,6 +2744,11 @@ private fun ProgressBar(
                             onSeekCommit()
                             return@onPreviewKeyEvent true
                         }
+                        KeyEvent.KEYCODE_DPAD_CENTER,
+                        KeyEvent.KEYCODE_ENTER,
+                        KeyEvent.KEYCODE_NUMPAD_ENTER -> {
+                            if (onClick != null) return@onPreviewKeyEvent true
+                        }
                     }
                     return@onPreviewKeyEvent false
                 }
@@ -2747,6 +2756,17 @@ private fun ProgressBar(
                 // testing additional key handling for DPAD_LEFT and DPAD_RIGHT to allow seek in focus (check)
                 if (keyEvent.nativeKeyEvent.action == KeyEvent.ACTION_DOWN) {
                     when (keyEvent.nativeKeyEvent.keyCode) {
+                        KeyEvent.KEYCODE_DPAD_CENTER,
+                        KeyEvent.KEYCODE_ENTER,
+                        KeyEvent.KEYCODE_NUMPAD_ENTER -> {
+                            if (onClick != null) {
+                                // Ignore key-repeat so holding OK doesn't toggle repeatedly.
+                                if (keyEvent.nativeKeyEvent.repeatCount == 0) onClick()
+                                true
+                            } else {
+                                false
+                            }
+                        }
                         KeyEvent.KEYCODE_DPAD_DOWN -> {
                             if (downFocusRequester != null) {
                                 try {
