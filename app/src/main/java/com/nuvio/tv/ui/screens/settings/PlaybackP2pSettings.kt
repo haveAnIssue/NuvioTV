@@ -10,6 +10,7 @@ import com.nuvio.tv.core.torrent.TorrentCacheClearResult
 import com.nuvio.tv.core.torrent.TorrentCacheSize
 import com.nuvio.tv.core.torrent.TorrentCacheState
 import com.nuvio.tv.core.torrent.TorrentProfile
+import com.nuvio.tv.ui.util.keepLtr
 
 internal data class P2pSettingsUi(
     val enabled: Boolean = false,
@@ -54,7 +55,7 @@ internal fun PlaybackP2pSection(
     SettingsActionRow(
         title = stringResource(R.string.settings_p2p_cache_size_title),
         subtitle = stringResource(R.string.settings_p2p_cache_size_description),
-        value = stringResource(cacheSizeLabel(p2p.cacheSize)),
+        value = stringResource(cacheSizeLabel(p2p.cacheSize)).keepLtr(),
         onClick = { onOpenDialog(PlaybackDialog.TORRENT_CACHE_SIZE) }
     )
     SettingsActionRow(
@@ -95,7 +96,7 @@ internal fun P2pSettingsDialogs(
             title = stringResource(R.string.settings_p2p_cache_size_title),
             subtitle = stringResource(R.string.settings_p2p_cache_size_description),
             options = TorrentCacheSize.entries.map { size ->
-                SettingsPickerOption(value = size, title = stringResource(cacheSizeLabel(size)))
+                SettingsPickerOption(value = size, title = stringResource(cacheSizeLabel(size)).keepLtr())
             },
             selectedValue = p2p.cacheSize,
             onOptionSelected = { size ->

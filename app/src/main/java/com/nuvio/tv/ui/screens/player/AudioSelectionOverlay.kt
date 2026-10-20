@@ -25,7 +25,6 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -41,9 +40,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.tv.material3.Border
 import androidx.tv.material3.Card
@@ -658,14 +655,11 @@ private fun AdjustmentSection(
             style = MaterialTheme.typography.bodyMedium,
             color = Color.White.copy(alpha = 0.92f)
         )
-
-        CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
-            Text(
-                text = valueText,
-                style = MaterialTheme.typography.titleMedium,
-                color = Color.White
-            )
-        }
+        Text(
+            text = valueText,
+            style = MaterialTheme.typography.titleMedium,
+            color = Color.White
+        )
 
         Row(
             horizontalArrangement = Arrangement.spacedBy(6.dp)
@@ -804,8 +798,8 @@ private enum class AudioControlFocusTarget {
 
 private fun formatAudioDelay(delayMs: Int): String {
     return if (delayMs == 0) {
-        String.format(Locale.US, "%.3fs", 0f)
+        String.format(Locale.US, "\u200E%.3fs", 0f)
     } else {
-        String.format(Locale.US, "%+.3fs", delayMs / 1000f)
+        String.format(Locale.US, "\u200E%+.3fs", delayMs / 1000f)
     }
 }

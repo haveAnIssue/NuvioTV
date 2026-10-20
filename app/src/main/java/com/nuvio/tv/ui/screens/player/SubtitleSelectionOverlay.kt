@@ -33,7 +33,6 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -53,6 +52,7 @@ import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.LayoutDirection
+import com.nuvio.tv.ui.util.keepLtr
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.res.stringResource
 import kotlin.math.roundToInt
@@ -880,13 +880,11 @@ private fun SubtitleStyleRail(
                             style = MaterialTheme.typography.bodyMedium,
                             color = Color.White
                         )
-                        CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
-                            Text(
-                                text = formatSubtitleDelay(subtitleDelayMs),
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = Color.White.copy(alpha = 0.7f)
-                            )
-                        }
+                        Text(
+                            text = formatSubtitleDelay(subtitleDelayMs).keepLtr(),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.White.copy(alpha = 0.7f)
+                        )
                     }
                 }
             }
@@ -1412,7 +1410,7 @@ private fun StepperRow(
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = value,
+                text = value.keepLtr(),
                 style = MaterialTheme.typography.bodyMedium,
                 color = Color.White
             )

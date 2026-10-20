@@ -3,6 +3,7 @@
 package com.nuvio.tv.ui.screens.settings
 
 import com.nuvio.tv.ui.theme.NuvioTheme
+import com.nuvio.tv.ui.util.keepLtr
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
@@ -284,7 +285,7 @@ private fun DiagnosticRow(
         )
         Spacer(modifier = Modifier.width(10.dp))
         Text(
-            text = value,
+            text = value.keepLtr(),
             style = MaterialTheme.typography.bodySmall,
             color = valueColor,
             modifier = Modifier.fillMaxWidth()
