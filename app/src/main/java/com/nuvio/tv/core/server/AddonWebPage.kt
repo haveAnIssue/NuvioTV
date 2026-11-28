@@ -160,7 +160,7 @@ ${tabButtons}
         }
         return """
 <!DOCTYPE html>
-<html lang="en">
+<html ${WebPageDirection.htmlAttributes(baseContext)}>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -292,7 +292,7 @@ ${tabButtons}
     font-size: 0.8rem;
     margin-top: 0.75rem;
     display: none;
-    padding-left: 1.25rem;
+    padding-inline-start: 1.25rem;
   }
   .btn {
     display: inline-flex;
@@ -461,7 +461,7 @@ ${tabButtons}
     background: #fff;
     padding: 0.15rem 0.4rem;
     border-radius: 100px;
-    margin-left: 0.5rem;
+    margin-inline-start: 0.5rem;
     vertical-align: middle;
   }
   .empty-state {
@@ -505,7 +505,7 @@ ${tabButtons}
     border: 1px solid rgba(207, 102, 121, 0.35);
     padding: 0.12rem 0.45rem;
     border-radius: 100px;
-    margin-left: 0.5rem;
+    margin-inline-start: 0.5rem;
     vertical-align: middle;
   }
   .badge-collection {
@@ -518,7 +518,7 @@ ${tabButtons}
     border: 1px solid rgba(130, 170, 255, 0.35);
     padding: 0.12rem 0.45rem;
     border-radius: 100px;
-    margin-left: 0.5rem;
+    margin-inline-start: 0.5rem;
     vertical-align: middle;
   }
   .status-overlay {
@@ -780,7 +780,7 @@ ${tabButtons}
   .toggle-thumb {
     position: absolute;
     top: 2px;
-    left: 2px;
+    inset-inline-start: 2px;
     width: 18px;
     height: 18px;
     background: #000;
@@ -789,6 +789,7 @@ ${tabButtons}
     box-shadow: 0 1px 3px rgba(0,0,0,0.4);
   }
   .toggle-switch input:checked ~ .toggle-thumb { transform: translateX(18px); background: #000; }
+  [dir="rtl"] .toggle-switch input:checked ~ .toggle-thumb { transform: translateX(-18px); }
   .toggle-switch:not(:has(input:checked)) .toggle-thumb { background: rgba(255,255,255,0.6); }
   .toggle-label {
     font-size: 0.8rem;
@@ -908,7 +909,7 @@ ${tabButtons}
     transition: all 0.2s;
     -webkit-tap-highlight-color: transparent;
   }
-  .cover-mode-btn + .cover-mode-btn { border-left: 1px solid rgba(255,255,255,0.06); }
+  .cover-mode-btn + .cover-mode-btn { border-inline-start: 1px solid rgba(255,255,255,0.06); }
   .cover-mode-btn.active {
     background: rgba(255,255,255,0.1);
     color: #fff;
@@ -1055,7 +1056,7 @@ ${tabButtons}
     background: rgba(255,255,255,0.035);
     color: rgba(255,255,255,0.82);
     font-family: inherit;
-    text-align: left;
+    text-align: start;
   }
   .tmdb-preset-card span:first-child {
     min-width: 0;
@@ -3461,6 +3462,7 @@ if (addonUrlInput) {
 
 loadState();
 </script>
+${WebPageDirection.AUTO_DIRECTION_SCRIPT}
 </body>
 </html>
 """.trimIndent()

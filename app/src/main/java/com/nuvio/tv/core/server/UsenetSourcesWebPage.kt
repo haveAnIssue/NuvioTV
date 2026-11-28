@@ -38,7 +38,7 @@ object UsenetSourcesWebPage {
         }
         return """
 <!DOCTYPE html>
-<html>
+<html ${WebPageDirection.htmlAttributes(context)}>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -56,7 +56,7 @@ object UsenetSourcesWebPage {
   .tab { border: 1px solid rgba(255,255,255,0.12); border-radius: 999px; background: transparent; color: rgba(255,255,255,0.58);
     font: inherit; font-size: 0.875rem; font-weight: 600; padding: 0.8rem 1rem; }
   .tab.active { background: #fff; border-color: #fff; color: #000; }
-  .item { display: block; width: 100%; text-align: left; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+  .item { display: block; width: 100%; text-align: start; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
     border-radius: 16px; padding: 0.9rem 1rem; margin-bottom: 0.6rem; color: #fff; font: inherit; }
   .item b { display: block; font-weight: 600; }
   .item span { color: rgba(255,255,255,0.45); font-size: 0.8rem; word-break: break-all; }
@@ -306,6 +306,7 @@ load().then(() => {
   if (addOnOpen === '${UsenetSourcesConfigServer.OPEN_RANKING}') document.querySelector('.tab[data-tab="ranking"]').click();
 }).catch(e => setStatus(e.message, true));
 </script>
+${WebPageDirection.AUTO_DIRECTION_SCRIPT}
 </body>
 </html>
 """.trimIndent()

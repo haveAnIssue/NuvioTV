@@ -19,7 +19,7 @@ internal object SubtitleFontWebPage {
 
         return """
 <!DOCTYPE html>
-<html lang="en">
+<html ${WebPageDirection.htmlAttributes(baseContext)}>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -74,6 +74,7 @@ input.addEventListener('change',async()=>{
   input.value='';
 });
 </script>
+${WebPageDirection.AUTO_DIRECTION_SCRIPT}
 </body>
 </html>
 """.trimIndent()

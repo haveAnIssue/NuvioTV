@@ -53,7 +53,7 @@ object StreamBadgeWebPage {
         val previewCountTemplate = context?.getString(R.string.settings_fusion_badge_preview_count) ?: "%1\$d Fusion-style badges from this URL"
         return """
 <!DOCTYPE html>
-<html lang="en">
+<html ${WebPageDirection.htmlAttributes(rawContext)}>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -320,6 +320,7 @@ badgePlacementButtons.BOTTOM.addEventListener('click',()=>saveBadgePlacement('BO
 badgePlacementButtons.TOP.addEventListener('click',()=>saveBadgePlacement('TOP'));
 load().catch(()=>{statusBox.textContent=labels.loadError;statusBox.className='status error';});
 </script>
+${WebPageDirection.AUTO_DIRECTION_SCRIPT}
 </body>
 </html>
 """.trimIndent()

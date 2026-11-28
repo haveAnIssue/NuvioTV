@@ -41,7 +41,7 @@ internal object CustomPosterWebPage {
 
         return """
 <!DOCTYPE html>
-<html lang="en">
+<html ${WebPageDirection.htmlAttributes(rawContext)}>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -111,6 +111,7 @@ if(r.ok){msg('$clearedMsg',true);${'$'}t.value='';load()}else{msg('$errorClear',
 catch(e){msg('$errorConnection',false)}}
 load();
 </script>
+${WebPageDirection.AUTO_DIRECTION_SCRIPT}
 </body>
 </html>
 """.trimIndent()

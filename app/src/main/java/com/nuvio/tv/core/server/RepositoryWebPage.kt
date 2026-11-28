@@ -17,7 +17,7 @@ object RepositoryWebPage {
         } else baseContext
         return """
 <!DOCTYPE html>
-<html lang="en">
+<html ${WebPageDirection.htmlAttributes(baseContext)}>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -101,7 +101,7 @@ object RepositoryWebPage {
     font-size: 0.8rem;
     margin-top: 0.75rem;
     display: none;
-    padding-left: 1.25rem;
+    padding-inline-start: 1.25rem;
   }
   .btn {
     display: inline-flex;
@@ -212,7 +212,7 @@ object RepositoryWebPage {
     background: #fff;
     padding: 0.15rem 0.4rem;
     border-radius: 100px;
-    margin-left: 0.5rem;
+    margin-inline-start: 0.5rem;
     vertical-align: middle;
   }
   .empty-state {
@@ -601,6 +601,7 @@ document.getElementById('repoUrl').addEventListener('keydown', function(e) {
 
 loadRepos();
 </script>
+${WebPageDirection.AUTO_DIRECTION_SCRIPT}
 </body>
 </html>
 """.trimIndent()
