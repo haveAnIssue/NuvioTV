@@ -46,6 +46,7 @@ import com.nuvio.tv.BuildConfig
 import com.nuvio.tv.R
 import com.nuvio.tv.core.build.AppFeaturePolicy
 import com.nuvio.tv.ui.components.MemberBrandWordmark
+import androidx.compose.material.icons.automirrored.filled.OpenInNew
 
 @Composable
 fun AboutScreen(
@@ -147,7 +148,7 @@ fun AboutSettingsContent(
                             SettingsActionRow(
                                 title = stringResource(R.string.about_privacy_policy),
                                 subtitle = stringResource(R.string.about_privacy_policy_subtitle),
-                                trailingIcon = Icons.Default.OpenInNew,
+                                trailingIcon = Icons.AutoMirrored.Filled.OpenInNew,
                                 modifier = if (!AppFeaturePolicy.inAppUpdatesEnabled) {
                                     firstRowModifier.then(
                                         if (initialFocusRequester != null) Modifier.focusRequester(initialFocusRequester)

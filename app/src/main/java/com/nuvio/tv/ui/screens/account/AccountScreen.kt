@@ -52,6 +52,7 @@ import androidx.tv.material3.Text
 import androidx.compose.ui.res.stringResource
 import com.nuvio.tv.R
 import com.nuvio.tv.domain.model.AuthState
+import androidx.compose.material.icons.automirrored.filled.Logout
 
 private const val SHOW_SYNC_CODE_FEATURES = false
 
@@ -364,7 +365,7 @@ private fun SignOutButton(onClick: () -> Unit) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
-                imageVector = Icons.Default.Logout,
+                imageVector = Icons.AutoMirrored.Filled.Logout,
                 contentDescription = null,
                 modifier = Modifier.size(20.dp)
             )
