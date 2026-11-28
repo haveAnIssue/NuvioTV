@@ -637,7 +637,7 @@ private fun FilmographyFilterTabs(
                     text = when (filter) {
                         FilmographyFilter.ALL -> stringResource(R.string.cast_detail_filter_all)
                         FilmographyFilter.MOVIES -> stringResource(R.string.type_movies)
-                        FilmographyFilter.SERIES -> stringResource(R.string.type_series)
+                        FilmographyFilter.SERIES -> stringResource(R.string.type_series_plural)
                     },
                     style = MaterialTheme.typography.labelLarge,
                     modifier = Modifier.padding(
