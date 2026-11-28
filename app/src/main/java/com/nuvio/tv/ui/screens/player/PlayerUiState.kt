@@ -80,6 +80,8 @@ data class PlayerUiState(
     val currentStreamDescription: String? = null, // Description of the currently playing stream
     val backdrop: String? = null,
     val logo: String? = null,
+    /** ISO 639-1 language of [logo], when known (TMDB). Drives the loading-fill direction. */
+    val logoLanguage: String? = null,
     val description: String? = null,
     val castMembers: List<MetaCastMember> = emptyList(),
     val showControls: Boolean = true,

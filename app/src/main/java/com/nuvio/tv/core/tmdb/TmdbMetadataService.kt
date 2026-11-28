@@ -1,5 +1,6 @@
 package com.nuvio.tv.core.tmdb
 
+import com.nuvio.tv.core.util.withModernLanguageCode
 import android.util.Log
 import com.nuvio.tv.BuildConfig
 import com.nuvio.tv.data.remote.api.TmdbAggregateCreditsResponse
@@ -304,9 +305,11 @@ class TmdbMetadataService(
                 val collectionId = details?.belongsToCollection?.id
                 val collectionName = details?.belongsToCollection?.name
 
-                val logoPath = images?.logos?.let {
-                    selectBestLocalizedImagePath(it, normalizedLanguage)
+                val logoImage = images?.logos?.let {
+                    selectBestLocalizedImage(it, normalizedLanguage)
                 }
+                val logoPath = logoImage?.filePath
+                val logoLanguage = logoImage?.iso6391?.takeIf { it.isNotBlank() }
 
                 val logo = buildImageUrl(logoPath, size = "w500")
 
@@ -474,6 +477,7 @@ class TmdbMetadataService(
                     genres = genres,
                     backdrop = backdrop,
                     logo = logo,
+                    logoLanguage = logoLanguage,
                     poster = poster,
                     directorMembers = exposedDirectorMembers,
                     writerMembers = exposedWriterMembers,
@@ -1223,14 +1227,19 @@ class TmdbMetadataService(
         // Map codes unsupported by TMDB to their closest equivalent
         return when (normalized) {
             "es-419" -> "es-MX"
-            else -> normalized
+            else -> normalized.withModernLanguageCode()
         }
     }
 
     private fun selectBestLocalizedImagePath(
         images: List<TmdbImage>,
         normalizedLanguage: String
-    ): String? {
+    ): String? = selectBestLocalizedImage(images, normalizedLanguage)?.filePath
+
+    private fun selectBestLocalizedImage(
+        images: List<TmdbImage>,
+        normalizedLanguage: String
+    ): TmdbImage? {
         if (images.isEmpty()) return null
         val languageCode = normalizedLanguage.substringBefore("-")
         val explicitRegion = normalizedLanguage.substringAfter("-", "").uppercase(Locale.US).takeIf { it.length == 2 }
@@ -1250,7 +1259,6 @@ class TmdbMetadataService(
                     .thenByDescending { it.iso6391 == null }
             )
             .firstOrNull()
-            ?.filePath
     }
 
     companion object {
@@ -1675,7 +1683,9 @@ data class TmdbEnrichment(
     val collectionName: String?,
     val originalTitle: String? = null,
     val alternativeTitles: List<String> = emptyList(),
-    val trailers: List<MetaTrailer> = emptyList()
+    val trailers: List<MetaTrailer> = emptyList(),
+    /** ISO 639-1 language of the chosen [logo] image (null for textless / unknown). */
+    val logoLanguage: String? = null
 )
 
 data class TmdbEpisodeEnrichment(

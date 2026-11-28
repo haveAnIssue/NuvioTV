@@ -159,7 +159,7 @@ private suspend fun PlayerRuntimeController.enrichDescriptionFromTmdb(id: String
     if (settings.useArtwork) {
         val tmdbLogo = enrichment.logo
         if (!tmdbLogo.isNullOrBlank()) {
-            _uiState.update { it.copy(logo = tmdbLogo) }
+            _uiState.update { it.copy(logo = tmdbLogo, logoLanguage = enrichment.logoLanguage) }
         }
     }
 

@@ -1,5 +1,6 @@
 package com.nuvio.tv.ui.screens.player
 
+import com.nuvio.tv.core.util.isRtlLanguageCode
 import com.nuvio.tv.ui.theme.NuvioMotion
 
 import com.nuvio.tv.ui.theme.NuvioTheme
@@ -60,6 +61,7 @@ fun LoadingOverlay(
     title: String? = null,
     message: String? = null,
     progress: Float? = null,
+    logoLanguage: String? = null,
     modifier: Modifier = Modifier
 ) {
     var logoLoadFailed by remember(logoUrl) { mutableStateOf(false) }
@@ -156,6 +158,9 @@ fun LoadingOverlay(
                             ),
                             label = "loadingLogoFill"
                         )
+                        // The fill reveals the logo in its natural reading direction: right-to-left for
+                        // logos in a RTL language (Hebrew, Arabic, ...), left-to-right otherwise.
+                        val fillFromRight = logoLanguage.isRtlLanguageCode()
                         Box(
                             modifier = Modifier
                                 .width(320.dp)
@@ -179,9 +184,9 @@ fun LoadingOverlay(
                                     },
                                 contentScale = ContentScale.Fit
                             )
-                            // Foreground layer: full-alpha logo clipped from left
-                            // to right by progress, giving the illusion that the
-                            // base logo is filling up as buffering proceeds.
+                            // Foreground layer: full-alpha logo clipped by progress (from the
+                            // reading-start edge), giving the illusion that the base logo is
+                            // filling up as buffering proceeds.
                             if (isLogoFillActive) {
                                 AsyncImage(
                                     model = logoRequest,
@@ -191,7 +196,10 @@ fun LoadingOverlay(
                                         .drawWithContent {
                                             val clipWidth = size.width * animatedFill
                                             if (clipWidth > 0f) {
-                                                clipRect(right = clipWidth) {
+                                                clipRect(
+                                                    left = if (fillFromRight) size.width - clipWidth else 0f,
+                                                    right = if (fillFromRight) size.width else clipWidth
+                                                ) {
                                                     this@drawWithContent.drawContent()
                                                 }
                                             }
