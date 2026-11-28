@@ -39,6 +39,7 @@ import com.nuvio.tv.core.player.SubtitleFonts
 import com.nuvio.tv.data.local.SubtitleStyleSettings
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import com.nuvio.tv.ui.util.withRtlLineMarks
 
 internal const val SUBTITLE_BASE_TEXT_SP = 24f
 private const val STYLED_SUBTITLE_PADDING_X = 10f
@@ -91,6 +92,8 @@ internal fun StyledSubtitleText(
 ) {
     val measurer = rememberTextMeasurer()
     val density = LocalDensity.current
+    // Hebrew/Arabic lines that start with a Latin word must still lay out right-to-left.
+    val shapedText = remember(text) { text.withRtlLineMarks() }
     BoxWithConstraints(modifier.fillMaxWidth()) {
         val unit = textSizePx / SUBTITLE_BASE_TEXT_SP
         val paddingX = STYLED_SUBTITLE_PADDING_X * unit
@@ -109,10 +112,10 @@ internal fun StyledSubtitleText(
         )
         val textConstraints = Constraints(maxWidth = maxTextWidth)
         val textAlpha = Color(style.textColor).alpha
-        val fillText = text.mapColors { subtitleFileColor(it, style.fileColorBrightness, textAlpha) }
+        val fillText = shapedText.mapColors { subtitleFileColor(it, style.fileColorBrightness, textAlpha) }
         val layout = measurer.measure(text = fillText, style = textStyle, constraints = textConstraints)
         val outlineLayout = if (text.spanStyles.any { it.item.color.isSpecified }) {
-            measurer.measure(text = text.mapColors { Color.Unspecified }, style = textStyle, constraints = textConstraints)
+            measurer.measure(text = shapedText.mapColors { Color.Unspecified }, style = textStyle, constraints = textConstraints)
         } else {
             layout
         }
