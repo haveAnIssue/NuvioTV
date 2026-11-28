@@ -604,7 +604,7 @@ private fun TabErrorState(
                 onClick = onRetry,
                 modifier = Modifier
                     .focusRequester(retryFocusRequester)
-                    .focusProperties { left = leftFocusRequester },
+                    .focusProperties { start = leftFocusRequester },
                 colors = ButtonDefaults.colors(
                     containerColor = NuvioTheme.colors.Secondary,
                     focusedContainerColor = NuvioTheme.colors.SecondaryVariant,
@@ -635,7 +635,7 @@ private fun SupporterCard(
             .fillMaxWidth()
             .focusRequester(focusRequester)
             .focusProperties {
-                left = leftFocusRequester
+                start = leftFocusRequester
                 if (upFocusRequester != null) up = upFocusRequester
             }
             .onFocusChanged { isFocused = it.isFocused },
@@ -723,7 +723,7 @@ private fun SponsorCard(
             .fillMaxWidth()
             .focusRequester(focusRequester)
             .focusProperties {
-                left = leftFocusRequester
+                start = leftFocusRequester
                 if (upFocusRequester != null) up = upFocusRequester
             }
             .onFocusChanged { isFocused = it.isFocused },
@@ -792,7 +792,7 @@ private fun ContributorCard(
             .fillMaxWidth()
             .focusRequester(focusRequester)
             .focusProperties {
-                left = leftFocusRequester
+                start = leftFocusRequester
                 if (upFocusRequester != null) up = upFocusRequester
             }
             .onFocusChanged { isFocused = it.isFocused },
@@ -957,7 +957,7 @@ private fun RowScope.SupportersTabButton(
             }
             .then(
                 if (leftFocusRequester != null) {
-                    Modifier.focusProperties { left = leftFocusRequester }
+                    Modifier.focusProperties { start = leftFocusRequester }
                 } else {
                     Modifier
                 }

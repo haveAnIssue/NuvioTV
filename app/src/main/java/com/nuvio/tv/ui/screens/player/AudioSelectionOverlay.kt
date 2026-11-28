@@ -317,7 +317,7 @@ private fun AudioTrackCard(
                 this.selected = isSelected
             }
             .then(if (focusRequester != null) Modifier.focusRequester(focusRequester) else Modifier)
-            .focusProperties { right = rightFocusRequester }
+            .focusProperties { end = rightFocusRequester }
             .onFocusChanged { if (it.isFocused) onFocused() },
         colors = CardDefaults.colors(
             containerColor = if (isSelected) NuvioTheme.colors.Secondary else Color.Transparent,
@@ -633,7 +633,7 @@ private fun AudioControlsContent(
                         .fillMaxWidth()
                         .focusRequester(nightModeFocusRequester)
                         .focusProperties {
-                            left = persistLeftFocusRequester
+                            start = persistLeftFocusRequester
                             up = persistUpFocusRequester
                             down = persistFocusRequester
                         },
@@ -677,7 +677,7 @@ private fun AudioControlsContent(
                         }
                     }
                     .focusProperties {
-                        left = persistLeftFocusRequester
+                        start = persistLeftFocusRequester
                         up = if (isNightModeAvailable) nightModeFocusRequester else persistUpFocusRequester
                     },
                 colors = CardDefaults.colors(
@@ -836,8 +836,8 @@ private fun StepCard(
             .focusRequester(focusRequester)
             .focusProperties {
                 canFocus = enabled
-                left = leftFocusRequester
-                right = rightFocusRequester
+                start = leftFocusRequester
+                end = rightFocusRequester
                 upFocusRequester?.let { up = it }
                 downFocusRequester?.let { down = it }
             },

@@ -657,7 +657,7 @@ private fun AddRepositoryInline(
                     },
                     enabled = !isLoading && url.isNotBlank(),
                     modifier = Modifier
-                        .focusProperties { right = FocusRequester.Cancel }
+                        .focusProperties { end = FocusRequester.Cancel }
                         .semantics { role = Role.Button },
                     colors = ButtonDefaults.colors(
                         containerColor = NuvioTheme.colors.Secondary,
@@ -1424,7 +1424,7 @@ private fun ScraperCard(
                         onClick = onTest,
                         enabled = !isTesting && scraper.enabled,
                         modifier = Modifier
-                            .focusProperties { left = FocusRequester.Cancel }
+                            .focusProperties { start = FocusRequester.Cancel }
                             .onFocusChanged { isTestFocused = it.isFocused }
                             .semantics { role = Role.Button },
                         colors = ButtonDefaults.colors(

@@ -5,6 +5,7 @@
 
 package com.nuvio.tv.ui.screens.player
 
+import com.nuvio.tv.ui.util.isRtlLayout
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.ui.layout.boundsInWindow
 import android.graphics.RectF
@@ -235,7 +236,7 @@ fun PlayerScreen(
     val effectiveAutoplayEnabled by viewModel.effectiveAutoplayEnabled.collectAsState(initial = false)
     val lifecycleOwner = LocalLifecycleOwner.current
     val context = LocalContext.current
-    val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
+    val isRtl = isRtlLayout()
     val containerFocusRequester = remember { FocusRequester() }
     val playPauseFocusRequester = remember { FocusRequester() }
     val progressBarFocusRequester = remember { FocusRequester() }
@@ -4245,7 +4246,7 @@ private fun ErrorOverlay(
                             .onPlaced { targetButtonPlaced = true }
                             .onFocusChanged { mpvFocused = it.isFocused }
                             .focusProperties {
-                                right = if (showReportAction) reportFocusRequester else exitFocusRequester
+                                end = if (showReportAction) reportFocusRequester else exitFocusRequester
                             }
                     )
                 }
@@ -4264,8 +4265,8 @@ private fun ErrorOverlay(
                             .focusRequester(reportFocusRequester)
                             .onFocusChanged { reportFocused = it.isFocused }
                             .focusProperties {
-                                if (onSwitchMpvAction != null) left = mpvFocusRequester
-                                right = exitFocusRequester
+                                if (onSwitchMpvAction != null) start = mpvFocusRequester
+                                end = exitFocusRequester
                             }
                     )
                 }
@@ -4280,7 +4281,7 @@ private fun ErrorOverlay(
                         }
                         .onFocusChanged { exitFocused = it.isFocused }
                         .focusProperties {
-                            left = if (showReportAction) {
+                            start = if (showReportAction) {
                                 reportFocusRequester
                             } else if (onSwitchMpvAction != null) {
                                 mpvFocusRequester
